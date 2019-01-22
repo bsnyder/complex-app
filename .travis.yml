@@ -14,7 +14,7 @@ after_success:
     - docker build -t bsnyder/complex-app-server ./server
     - docker build -t bsnyder/complex-app-worker ./worker
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-    - docker push bsnyder-complex-app-client
-    - docker push bsnyder-complex-app-nginx
-    - docker push bsnyder-complex-app-server
-    - docker push bsnyder-complex-app-worker
+    - docker push bsnyder/complex-app/complex-app-client
+    - docker push bsnyder/complex-app/complex-app-nginx
+    - docker push bsnyder/complex-app/complex-app-server
+    - docker push bsnyder/complex-app/complex-app-worker
