@@ -3,20 +3,18 @@ services:
     - docker
 
 before_install:
-    - docker build -t bsnyder/complex-app -f Dockerfile.dev .
+    - docker build -t bsnyder/complex-app-test -f ./client/Dockerfile.dev ./client
 
 script: 
-    - docker run bsnyder/complex-app npm run test -- --coverage
+    - docker run bsnyder/complex-app-test npm run test -- --coverage
 
-deploy:
-    provider: elasticbeanstalk
-    region: "us-west-1"
-    app: complex-app
-    env: "complex-app-env"
-    bucket_name: "elasticbeanstalk-us-west-1-064316789315"
-    bucket_path: "complex-app"
-    on:
-        branch: master
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: 
-        secure: "$AWS_SECRET_KEY"
+after_success:
+    - docker build -t bsnyder/complex-app-client ./client
+    - docker build -t bsnyder/complex-app-nginx ./nginx
+    - docker build -t bsnyder/complex-app-server ./server
+    - docker build -t bsnyder/complex-app-worker ./worker
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push bsnyder-complex-app-client
+    - docker push bsnyder-complex-app-nginx
+    - docker push bsnyder-complex-app-server
+    - docker push bsnyder-complex-app-worker
